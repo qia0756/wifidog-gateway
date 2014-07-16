@@ -134,6 +134,7 @@ static const struct {
 	{ "firewallruleset",		oFirewallRuleSet },
 	{ "firewallrule",		oFirewallRule },
 	{ "trustedmaclist",		oTrustedMACList },
+	{ "trusteddomainlist",		oTrustedDOMAINList },
         { "htmlmessagefile",		oHtmlMessageFile },
 	{ "proxyport",			oProxyPort },
 	{ NULL,				oBadOption },
@@ -184,6 +185,7 @@ config_init(void)
 	config.internal_sock = safe_strdup(DEFAULT_INTERNAL_SOCK);
 	config.rulesets = NULL;
 	config.trustedmaclist = NULL;
+	config.trusteddomainlist = NULL;
 	config.proxy_port = 0;
 }
 
@@ -712,6 +714,9 @@ config_read(const char *filename)
 				case oTrustedMACList:
 					parse_trusted_mac_list(p1);
 					break;
+				case oTrustedDomainList:
+					parse_trusted_domain_list(p1);
+					break;
 				case oHTTPDName:
 					config.httpdname = safe_strdup(p1);
 					break;
@@ -828,6 +833,48 @@ void parse_trusted_mac_list(const char *ptr) {
 	free(ptrcopy);
 
 	free(mac);
+
+}
+
+/*
+add for allow domain access
+author:qia0756
+*/
+void parse_trusted_domain_list(const char *ptr) {
+	char *ptrcopy = NULL;
+	char *possibledomain = NULL;
+
+	t_trusted_domain *p = NULL;
+
+	debug(LOG_DEBUG, "Parsing string [%s] for trusted DOMAIN addresses", ptr);
+
+
+	/* strsep modifies original, so let's make a copy */
+	ptrcopy = safe_strdup(ptr);
+
+	while ((possibledomain = strsep(&ptrcopy, ", "))) {
+	
+			debug(LOG_DEBUG, "Adding DOMAIN address [%s] to trusted list", possibledomain);
+
+			if (config.trusteddomainlist == NULL) {
+				config.trusteddomainlist = safe_malloc(sizeof(t_trusted_domain));
+				config.trusteddomainlist->domain = safe_strdup(possibledomain);
+				config.trusteddomainlist->next = NULL;
+			}
+			else {
+				/* Advance to the last entry */
+				for (p = config.trusteddomainlist; p->next != NULL; p = p->next);
+				p->next = safe_malloc(sizeof(t_trusted_domain));
+				p = p->next;
+				p->domain = safe_strdup(possibledomain);
+				p->next = NULL;
+			}
+
+		
+	}
+
+	free(ptrcopy);
+
 
 }
 
