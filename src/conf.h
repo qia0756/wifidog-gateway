@@ -129,6 +129,14 @@ typedef struct _trusted_mac_t {
 } t_trusted_mac;
 
 /**
+ * Trusted DOMAIN Addresses
+ */
+typedef struct _trusted_domain_t {
+    char   *domain;
+    struct _trusted_domain_t *next;
+} t_trusted_domain;
+
+/**
  * Configuration structure
  */
 typedef struct {
@@ -165,6 +173,7 @@ typedef struct {
     int proxy_port;		/**< @brief Transparent proxy port (0 to disable) */
     t_firewall_ruleset	*rulesets;	/**< @brief firewall rules */
     t_trusted_mac *trustedmaclist; /**< @brief list of trusted macs */
+    t_trusted_domain *trusteddomainlist; /**< @brief list of trusted domains */
 } s_config;
 
 /** @brief Get the current gateway configuration */
@@ -192,6 +201,8 @@ void mark_auth_server_bad(t_auth_serv *);
 t_firewall_rule *get_ruleset(const char *);
 
 void parse_trusted_mac_list(const char *);
+
+void parse_trusted_domain_list(const char *);
 
 #define LOCK_CONFIG() do { \
 	debug(LOG_DEBUG, "Locking config"); \

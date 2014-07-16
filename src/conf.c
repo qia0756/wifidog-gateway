@@ -94,6 +94,7 @@ typedef enum {
 	oFirewallRule,
 	oFirewallRuleSet,
 	oTrustedMACList,
+	oTrustedDOMAINList,
         oHtmlMessageFile,
 	oProxyPort,
 } OpCodes;
