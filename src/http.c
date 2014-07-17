@@ -147,7 +147,7 @@ http_callback_wifidog(httpd *webserver, request *r)
 void 
 http_callback_about(httpd *webserver, request *r)
 {
-	send_http_page(r, "About WiFiDog", "This is WiFiDog version <strong>" VERSION "</strong>");
+	send_http_page(r, "About WiFiDog @qia0756", "This is WiFiDog version <strong>" VERSION "</strong>");
 }
 
 void 
